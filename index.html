@@ -211,6 +211,12 @@
     <!-- ========================================================================= -->
     <script>
         // ==========================================
+        // 🔗 ЕДИНАЯ ССЫЛКА ДЛЯ ВСЕХ РАЗДЕЛОВ (Лагерь, Театр, Услуги и т.д.) 🔗
+        // ==========================================
+        // 👇 ЗДЕСЬ ТЫ МОЖЕШЬ ИЗМЕНИТЬ ССЫЛКУ САМА 👇
+        const GLOBAL_ACTION_LINK = "https://vk.ru/maris74";
+
+        // ==========================================
         // 👩‍💻 НАСТРОЙКИ РАЗРАБОТЧИКА (ТВОИ ДАННЫЕ В ПОДВАЛЕ) 👩‍💻
         // ==========================================
         const MY_DEVELOPER_NAME = "design & code by Elena Sotnikova"; // Твоя подпись
@@ -232,7 +238,7 @@
         // ==========================================
         const DESKTOP_TITLE = "";
         const DESKTOP_DESC = "Открой Smart-визитку на смартфоне, чтобы почувствовать магию 3D-эффектов, плавных анимаций и тактильного отклика.";
-        const DESKTOP_QR_LINK = "https://vk.com/ochhorlag"; // Ссылка для QR-кода
+        const DESKTOP_QR_LINK = "https://more.nice-app.ru"; // Ссылка для QR-кода
 
         // ==========================================
         // 🔗 ИНТЕГРАЦИЯ С GOOGLE ТАБЛИЦАМИ 🔗
@@ -1494,34 +1500,33 @@
             e.preventDefault();
             vkHaptic.impactOccurred('medium');
             
-            // Открываем ссылку с помощью VK Bridge или стандартно
+            // Используем единую ссылку из настроек
+            const targetUrl = GLOBAL_ACTION_LINK;
+            
+            // Открываем ссылку с помощью VK Bridge или стандартно (БЕЗ блюр-шторки)
             if (vkBridge) {
-                vkBridge.send('VKWebAppOpenUrl', { url: url }).catch(() => {
-                    window.open(url, '_blank');
+                vkBridge.send('VKWebAppOpenUrl', { url: targetUrl }).catch(() => {
+                    window.open(targetUrl, '_blank');
                 });
             } else {
-                window.open(url, '_blank');
+                window.open(targetUrl, '_blank');
             }
-
-            // Показываем блюр поверх текущей шторки
-            const blurGuide = document.getElementById('blur-guide-overlay');
-            blurGuide.classList.remove('hidden');
-            setTimeout(() => {
-                blurGuide.classList.remove('opacity-0');
-            }, 10);
         };
 
         window.openLinkDirectly = function(e, url) {
             e.preventDefault();
             vkHaptic.impactOccurred('medium');
             
+            // Используем единую ссылку из настроек
+            const targetUrl = GLOBAL_ACTION_LINK;
+            
             // Открываем ссылку с помощью VK Bridge или стандартно БЕЗ блюр-шторки
             if (vkBridge) {
-                vkBridge.send('VKWebAppOpenUrl', { url: url }).catch(() => {
-                    window.open(url, '_blank');
+                vkBridge.send('VKWebAppOpenUrl', { url: targetUrl }).catch(() => {
+                    window.open(targetUrl, '_blank');
                 });
             } else {
-                window.open(url, '_blank');
+                window.open(targetUrl, '_blank');
             }
         };
 
@@ -1574,21 +1579,18 @@
             vkHaptic.impactOccurred('medium');
             
             // ==========================================
-            // 🔗 ССЫЛКА ДЛЯ КНОПКИ "ПОДЕЛИТЬСЯ" (ВЕРХНИЙ ПРАВЫЙ УГОЛ) 🔗
+            // 🔗 ССЫЛКА ДЛЯ КНОПКИ В ПРАВОМ ВЕРХНЕМ УГЛУ 🔗
             // ==========================================
-            // Вставь ниже прямую ссылку на саму визитку VK Mini App. 
-            // Обычно она выглядит так: https://vk.com/app000000
-            const shareUrl = "https://more.nice-app.ru"; // <-- МЕНЯТЬ ССЫЛКУ ЗДЕСЬ!
+            // 👇 ЗДЕСЬ ТЫ МОЖЕШЬ ИЗМЕНИТЬ ССЫЛКУ САМА 👇
+            const headerLink = "https://more.nice-app.ru/"; 
             
+            // Делаем простой переход на сайт вместо шаринга
             if (vkBridge) {
-                vkBridge.send("VKWebAppShare", {"link": shareUrl}).catch(e => {
-                     // Если шаринг не удался, просто копируем ссылку
-                     navigator.clipboard.writeText(shareUrl);
-                     showToast("Ссылка скопирована!", 'ph-fill ph-copy');
+                vkBridge.send('VKWebAppOpenUrl', { url: headerLink }).catch(() => {
+                    window.open(headerLink, '_blank');
                 });
             } else {
-                 navigator.clipboard.writeText(shareUrl);
-                 showToast("Ссылка скопирована!", 'ph-fill ph-copy');
+                window.open(headerLink, '_blank');
             }
         }
 
