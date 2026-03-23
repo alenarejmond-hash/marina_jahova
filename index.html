@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Покраска интерфейса мобильного браузера в цвет темы -->
+    <meta name="theme-color" content="#8b0000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Навигатор Канала</title>
     <!-- Подключение VK Bridge API -->
     <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
@@ -56,6 +60,11 @@
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
+        }
+
+        /* Закрашиваем базовый слой, чтобы скрыть белые полосы на iOS и Android */
+        html {
+            background-color: var(--bg-color-2); 
         }
 
         html, body {
@@ -168,7 +177,8 @@
         }
     </style>
 </head>
-<body class="dynamic-bg min-h-screen flex items-center justify-center p-0 md:p-6 overflow-x-hidden">
+<!-- Добавлено min-h-[100dvh] для идеального прилегания к экрану на мобильных (убирает щели снизу) -->
+<body class="dynamic-bg min-h-screen min-h-[100dvh] flex items-center justify-center p-0 md:p-6 overflow-x-hidden">
 
     <!-- ЗАГРУЗОЧНЫЙ ЭКРАН (Огненный лоадер) -->
     <div id="app-loader" class="fixed inset-0 z-[100] dynamic-bg flex items-center justify-center transition-opacity duration-500">
@@ -1291,7 +1301,6 @@
             const btn = document.getElementById('program-sheet-btn');
             // 👇 Применяем единую ссылку из настроек
             btn.href = GLOBAL_ACTION_LINK;
-            btn.onclick = null; // Убираем перехватчик, ссылка откроется стандартно
 
             const sheet = document.getElementById('program-details-sheet');
             const overlay = document.getElementById('sheet-overlay');
@@ -1340,7 +1349,6 @@
             const btn = document.getElementById('service-sheet-btn');
             // 👇 Применяем единую ссылку из настроек
             btn.href = GLOBAL_ACTION_LINK;
-            btn.onclick = null; // Убираем перехватчик, ссылка откроется стандартно
 
             const sheet = document.getElementById('service-details-sheet');
             const overlay = document.getElementById('sheet-overlay');
@@ -1371,7 +1379,6 @@
             const btn = document.getElementById('training-btn');
             // 👇 Применяем единую ссылку из настроек
             btn.href = GLOBAL_ACTION_LINK;
-            btn.onclick = null; // Убираем перехватчик, ссылка откроется стандартно
 
             const sheet = document.getElementById('training-sheet');
             const overlay = document.getElementById('sheet-overlay');
@@ -1428,6 +1435,7 @@
 
         // Универсальное закрытие любой шторки
         function closeSheet() {
+            vkHaptic.impactOccurred('light');
             unlockScroll(); 
             const aboutSheet = document.getElementById('about-sheet');
             const postsSheet = document.getElementById('posts-sheet');
