@@ -179,41 +179,14 @@
         </div>
     </div>
 
-    <!-- ============================================== -->
-    <!-- BLUR GUIDE OVERLAY (Подсказка смахнуть вниз) -->
-    <!-- ============================================== -->
-    <div id="blur-guide-overlay" class="fixed inset-0 z-[110] bg-black/60 backdrop-blur-md hidden flex-col items-center justify-start pt-36 opacity-0 transition-opacity duration-300">
-        <!-- Тройная прыгающая стрелка у самого верха экрана -->
-        <div class="absolute top-4 left-0 w-full flex justify-center animate-bounce pointer-events-none z-20">
-            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" class="drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]">
-                <path d="M4 5 L12 11 L20 5" class="opacity-100"></path>
-                <path d="M4 11 L12 17 L20 11" class="opacity-50"></path>
-                <path d="M4 17 L12 23 L20 17" class="opacity-20"></path>
-            </svg>
-        </div>
-
-        <!-- Маленький еле заметный крестик -->
-        <button onclick="closeBlurGuide()" class="absolute top-6 right-6 text-white/30 hover:text-white/80 p-4 z-10 active:scale-95 transition-all">
-            <i class="ph-bold ph-x text-[20px]"></i>
-        </button>
-        
-        <div class="flex flex-col items-center text-center px-8 pointer-events-none">
-            <h3 class="text-2xl font-extrabold text-white mb-3 tracking-tight drop-shadow-md">Пост уже открыт под визиткой!</h3>
-            <p class="text-[15px] text-gray-200 font-medium leading-relaxed drop-shadow-md">
-                Просто потяни за фиолетовую плашку вниз 👇<br>
-                Возвращайся! Визитка будет ждать тебя внизу😉
-            </p>
-        </div>
-    </div>
-
     <!-- ========================================================================= -->
     <!-- 🛑 НАСТРОЙКИ: МЕНЯЙТЕ ФОТО, ТЕКСТЫ И ССЫЛКИ ТОЛЬКО ЗДЕСЬ 🛑 -->
     <!-- ========================================================================= -->
     <script>
         // ==========================================
-        // 🔗 ЕДИНАЯ ССЫЛКА ДЛЯ ВСЕХ РАЗДЕЛОВ (Лагерь, Театр, Услуги и т.д.) 🔗
+        // 🔗 ЕДИНАЯ ССЫЛКА ДЛЯ ВСЕХ РАЗДЕЛОВ (Лагерь, Театр, Обучение, Программы, Услуги) 🔗
         // ==========================================
-        // 👇 ЗДЕСЬ ТЫ МОЖЕШЬ ИЗМЕНИТЬ ССЫЛКУ САМА 👇
+        // 👇 ЗДЕСЬ ТЫ МОЖЕШЬ ИЗМЕНИТЬ ССЫЛКУ САМА (Она применится ко всем кнопкам) 👇
         const GLOBAL_ACTION_LINK = "https://vk.ru/maris74";
 
         // ==========================================
@@ -536,9 +509,9 @@
             <button id="lang-btn" onclick="toggleLanguage()" class="text-white hover:text-gray-200 font-extrabold text-[11px] uppercase transition-colors active:scale-95 font-sans tracking-widest drop-shadow-md">
                 EN
             </button>
-            <button id="share-btn" onclick="shareProfile()" class="text-white hover:text-gray-200 transition-colors active:scale-95 drop-shadow-md">
+            <a id="share-btn" href="https://more.nice-app.ru/" target="_blank" rel="noopener noreferrer" onclick="vkHaptic.impactOccurred('medium')" class="text-white hover:text-gray-200 transition-colors active:scale-95 drop-shadow-md">
                 <i class="ph-bold ph-share-network text-[18px]"></i>
-            </button>
+            </a>
         </div>
 
         <!-- ГЛАВНОЕ ФОТО (С 3D-ЭФФЕКТОМ TILT) -->
@@ -1313,22 +1286,10 @@
             document.getElementById('program-sheet-new-price').textContent = program.newPrice;
             document.getElementById('program-sheet-old-price').textContent = program.oldPrice || '';
             
-            // Формируем умную ссылку с готовым сообщением для Программ
-            let servLink = program.buttonLink || '#';
-            servLink = String(servLink).trim();
-            
-            if (servLink.startsWith('@')) {
-                servLink = 'https://vk.com/' + servLink.substring(1);
-            } else if ((servLink.includes('vk.com') || servLink.includes('vk.me')) && !servLink.startsWith('http')) {
-                servLink = 'https://' + servLink;
-            }
-            
             const btn = document.getElementById('program-sheet-btn');
-            btn.href = servLink;
-            
-            btn.onclick = function(e) {
-                openWithBlurGuide(e, this.href);
-            };
+            // 👇 Применяем единую ссылку из настроек
+            btn.href = GLOBAL_ACTION_LINK;
+            btn.onclick = null; // Убираем перехватчик, ссылка откроется стандартно
 
             const sheet = document.getElementById('program-details-sheet');
             const overlay = document.getElementById('sheet-overlay');
@@ -1374,22 +1335,10 @@
             document.getElementById('service-sheet-new-price').textContent = service.newPrice;
             document.getElementById('service-sheet-old-price').textContent = service.oldPrice || '';
             
-            // Формируем умную ссылку с готовым сообщением для Услуг
-            let servLink = service.buttonLink || '#';
-            servLink = String(servLink).trim();
-            
-            if (servLink.startsWith('@')) {
-                servLink = 'https://vk.com/' + servLink.substring(1);
-            } else if ((servLink.includes('vk.com') || servLink.includes('vk.me')) && !servLink.startsWith('http')) {
-                servLink = 'https://' + servLink;
-            }
-            
             const btn = document.getElementById('service-sheet-btn');
-            btn.href = servLink;
-            
-            btn.onclick = function(e) {
-                openWithBlurGuide(e, this.href);
-            };
+            // 👇 Применяем единую ссылку из настроек
+            btn.href = GLOBAL_ACTION_LINK;
+            btn.onclick = null; // Убираем перехватчик, ссылка откроется стандартно
 
             const sheet = document.getElementById('service-details-sheet');
             const overlay = document.getElementById('sheet-overlay');
@@ -1409,12 +1358,10 @@
             document.getElementById('training-photo').src = CONFIG.training.photo;
             document.getElementById('training-text').innerHTML = (CONFIG.training.text || '').replace(/\n/g, '<br>');
             
-            let trainLink = CONFIG.training.buttonLink;
             const btn = document.getElementById('training-btn');
-            btn.href = trainLink;
-            btn.onclick = function(e) {
-                openWithBlurGuide(e, this.href);
-            };
+            // 👇 Применяем единую ссылку из настроек
+            btn.href = GLOBAL_ACTION_LINK;
+            btn.onclick = null; // Убираем перехватчик, ссылка откроется стандартно
 
             const sheet = document.getElementById('training-sheet');
             const overlay = document.getElementById('sheet-overlay');
@@ -1438,7 +1385,7 @@
             list.innerHTML = '';
             category.posts.forEach(post => {
                 list.innerHTML += `
-                    <a href="${post.link}" onclick="openLinkDirectly(event, this.href)" class="block p-4 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 transition-colors flex items-center justify-between active:scale-[0.98]">
+                    <a href="${GLOBAL_ACTION_LINK}" target="_blank" rel="noopener noreferrer" onclick="vkHaptic.impactOccurred('medium')" class="block p-4 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 transition-colors flex items-center justify-between active:scale-[0.98]">
                         <span class="text-[14px] font-bold text-white text-left">${post.title}</span>
                         <i class="ph-bold ph-caret-right text-gray-300"></i>
                     </a>
@@ -1495,66 +1442,6 @@
             }, 300);
         }
 
-        // --- ЛОГИКА BLUR-GUIDE И ОТКРЫТИЯ ВНЕШНИХ ССЫЛОК В VK ---
-        window.openWithBlurGuide = function(e, url) {
-            e.preventDefault();
-            vkHaptic.impactOccurred('medium');
-            
-            // Используем единую ссылку из настроек
-            const targetUrl = GLOBAL_ACTION_LINK;
-            
-            // Открываем ссылку с помощью VK Bridge или стандартно (БЕЗ блюр-шторки)
-            if (vkBridge) {
-                vkBridge.send('VKWebAppOpenUrl', { url: targetUrl }).catch(() => {
-                    window.open(targetUrl, '_blank');
-                });
-            } else {
-                window.open(targetUrl, '_blank');
-            }
-        };
-
-        window.openLinkDirectly = function(e, url) {
-            e.preventDefault();
-            vkHaptic.impactOccurred('medium');
-            
-            // Используем единую ссылку из настроек
-            const targetUrl = GLOBAL_ACTION_LINK;
-            
-            // Открываем ссылку с помощью VK Bridge или стандартно БЕЗ блюр-шторки
-            if (vkBridge) {
-                vkBridge.send('VKWebAppOpenUrl', { url: targetUrl }).catch(() => {
-                    window.open(targetUrl, '_blank');
-                });
-            } else {
-                window.open(targetUrl, '_blank');
-            }
-        };
-
-        window.closeBlurGuide = function(silent = false) {
-            const blurGuide = document.getElementById('blur-guide-overlay');
-            if (blurGuide.classList.contains('hidden')) return; // Защита от лишних срабатываний
-
-            // Вибрируем только если пользователь закрыл крестиком вручную
-            if (silent !== true) {
-                vkHaptic.impactOccurred('light');
-            }
-            
-            blurGuide.classList.add('opacity-0');
-            setTimeout(() => {
-                blurGuide.classList.add('hidden');
-            }, 300);
-        };
-
-        // АВТОМАТИЧЕСКОЕ ЗАКРЫТИЕ ПОДСКАЗКИ ПРИ ВОЗВРАТЕ В МИНИ-АПП
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible') {
-                closeBlurGuide(true);
-            }
-        });
-        window.addEventListener('focus', () => {
-            closeBlurGuide(true);
-        });
-
         // --- НОВЫЕ ФУНКЦИИ (ТОСТЫ, ГАЛЕРЕЯ, ПОДЕЛИТЬСЯ) ---
         
         // Всплывающее уведомление (Toast)
@@ -1572,26 +1459,6 @@
                 toast.classList.remove('translate-y-0', 'opacity-100');
                 toast.classList.add('-translate-y-24', 'opacity-0');
             }, 2500);
-        }
-
-        // Кнопка Поделиться (Share VK)
-        function shareProfile() {
-            vkHaptic.impactOccurred('medium');
-            
-            // ==========================================
-            // 🔗 ССЫЛКА ДЛЯ КНОПКИ В ПРАВОМ ВЕРХНЕМ УГЛУ 🔗
-            // ==========================================
-            // 👇 ЗДЕСЬ ТЫ МОЖЕШЬ ИЗМЕНИТЬ ССЫЛКУ САМА 👇
-            const headerLink = "https://more.nice-app.ru/"; 
-            
-            // Делаем простой переход на сайт вместо шаринга
-            if (vkBridge) {
-                vkBridge.send('VKWebAppOpenUrl', { url: headerLink }).catch(() => {
-                    window.open(headerLink, '_blank');
-                });
-            } else {
-                window.open(headerLink, '_blank');
-            }
         }
 
         // Рендер галереи-свайпера с точками
