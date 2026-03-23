@@ -12,6 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
     <!-- Иконки Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Предзагрузка главной фотографии для мгновенного отображения -->
+    <link rel="preload" as="image" href="https://i.postimg.cc/VLRqMjHB/2026-03-23-21-15-58.jpg">
 
     <script>
         tailwind.config = {
@@ -536,7 +538,7 @@
         <!-- ГЛАВНОЕ ФОТО (С 3D-ЭФФЕКТОМ TILT) -->
         <div class="w-full fade-in">
             <div id="tilt-card" class="relative w-full aspect-[3.5/4] rounded-[2.5rem] overflow-hidden floating-shadow transform-gpu will-change-transform">
-                <img id="profile-avatar" src="" alt="Avatar" class="absolute inset-0 w-full h-full object-cover z-0">
+                <img id="profile-avatar" src="https://i.postimg.cc/VLRqMjHB/2026-03-23-21-15-58.jpg" fetchpriority="high" alt="Avatar" class="absolute inset-0 w-full h-full object-cover z-0">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10"></div>
                 
                 <!-- Блик для 3D эффекта -->
@@ -1430,7 +1432,7 @@
             list.innerHTML = '';
             category.posts.forEach(post => {
                 list.innerHTML += `
-                    <a href="${post.link}" onclick="openWithBlurGuide(event, this.href)" class="block p-4 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 transition-colors flex items-center justify-between active:scale-[0.98]">
+                    <a href="${post.link}" onclick="openLinkDirectly(event, this.href)" class="block p-4 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 transition-colors flex items-center justify-between active:scale-[0.98]">
                         <span class="text-[14px] font-bold text-white text-left">${post.title}</span>
                         <i class="ph-bold ph-caret-right text-gray-300"></i>
                     </a>
@@ -1509,6 +1511,20 @@
             }, 10);
         };
 
+        window.openLinkDirectly = function(e, url) {
+            e.preventDefault();
+            vkHaptic.impactOccurred('medium');
+            
+            // Открываем ссылку с помощью VK Bridge или стандартно БЕЗ блюр-шторки
+            if (vkBridge) {
+                vkBridge.send('VKWebAppOpenUrl', { url: url }).catch(() => {
+                    window.open(url, '_blank');
+                });
+            } else {
+                window.open(url, '_blank');
+            }
+        };
+
         window.closeBlurGuide = function(silent = false) {
             const blurGuide = document.getElementById('blur-guide-overlay');
             if (blurGuide.classList.contains('hidden')) return; // Защита от лишних срабатываний
@@ -1562,7 +1578,7 @@
             // ==========================================
             // Вставь ниже прямую ссылку на саму визитку VK Mini App. 
             // Обычно она выглядит так: https://vk.com/app000000
-            const shareUrl = "https://vk.com/app000000"; // <-- МЕНЯТЬ ССЫЛКУ ЗДЕСЬ!
+            const shareUrl = "https://more.nice-app.ru"; // <-- МЕНЯТЬ ССЫЛКУ ЗДЕСЬ!
             
             if (vkBridge) {
                 vkBridge.send("VKWebAppShare", {"link": shareUrl}).catch(e => {
