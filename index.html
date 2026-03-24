@@ -285,7 +285,7 @@
                         { 
                             title: "Детский лагерь", 
                             icon: '<i class="ph-bold ph-rocket-launch text-[#d4af37]"></i>', 
-                            link: "https://ochhorlag.ru/programs" // 👈 Измени ссылку в кавычках для Детского лагеря (если нужно)
+                            link: "https://ochhorlag.ru/" // 👈 Измени ссылку в кавычках для Детского лагеря (если нужно)
                         },
                         { 
                             title: "Семейный лагерь", 
@@ -445,7 +445,7 @@
                         { 
                             title: "Children's Camp", 
                             icon: '<i class="ph-bold ph-rocket-launch text-[#d4af37]"></i>', 
-                            link: "https://ochhorlag.ru/programs" // 👈 Измени ссылку в кавычках
+                            link: "https://ochhorlag.ru/" // 👈 Измени ссылку в кавычках
                         },
                         { 
                             title: "Family Camp", 
@@ -582,12 +582,9 @@
 
         <!-- ВЕРХНЯЯ ПАНЕЛЬ (Воздушная, без плашки) -->
         <div class="w-full flex justify-end items-center gap-3 px-2 -mt-4 -mb-4 fade-in relative z-10">
-            <button id="lang-btn" onclick="toggleLanguage()" class="text-white hover:text-gray-200 font-extrabold text-[11px] uppercase transition-colors active:scale-95 font-sans tracking-widest drop-shadow-md">
+            <button id="lang-btn" onclick="toggleLanguage()" class="text-white bg-black/30 backdrop-blur-md border border-white/20 px-4 py-1.5 rounded-full font-extrabold text-[12px] uppercase transition-all active:scale-95 font-sans tracking-widest shadow-lg">
                 EN
             </button>
-            <a id="share-btn" href="https://more.nice-app.ru/" target="_blank" rel="noopener noreferrer" onclick="vkHaptic.impactOccurred('medium')" class="text-white hover:text-gray-200 transition-colors active:scale-95 drop-shadow-md">
-                <i class="ph-bold ph-share-network text-[18px]"></i>
-            </a>
         </div>
 
         <!-- ГЛАВНОЕ ФОТО (С 3D-ЭФФЕКТОМ TILT) -->
@@ -679,7 +676,8 @@
                 <!-- 👩‍💻 ССЫЛКА НА РАЗРАБОТЧИКА 👩‍💻 -->
                 <!-- Теперь эта ссылка управляется из настроек в самом начале кода! -->
                 <div class="pt-6 pb-2">
-                    <a id="developer-link-el" href="#" target="_blank" rel="noopener noreferrer" class="text-[10px] text-gray-500/50 font-medium uppercase tracking-widest" style="color: rgba(107, 114, 128, 0.5) !important; -webkit-tap-highlight-color: transparent;">
+                    <!-- 👇 ЗДЕСЬ ТЫ МОЖЕШЬ ИЗМЕНИТЬ ЦВЕТ СВОЕЙ НАДПИСИ (сейчас белый полупрозрачный rgba(255,255,255, 0.4)) 👇 -->
+                    <a id="developer-link-el" href="#" target="_blank" rel="noopener noreferrer" class="text-[10px] font-medium uppercase tracking-widest" style="color: rgba(255, 255, 255, 0.4) !important; -webkit-tap-highlight-color: transparent;">
                         <span id="developer-name-el"></span>
                     </a>
                 </div>
@@ -1881,6 +1879,19 @@
                     }
                     
                     CONFIG = APP_DATA[currentLang]; // Применяем загруженные данные
+
+                    // 👇 ПРЕДЗАГРУЗКА ДИНАМИЧНЫХ ФОТОГРАФИЙ (Услуги, Программы) 👇
+                    setTimeout(() => {
+                        let dynamicPhotos = [];
+                        if (CONFIG.programs) CONFIG.programs.forEach(p => { if (p.photos && p.photos.length > 0) dynamicPhotos.push(...p.photos); else if (p.photo) dynamicPhotos.push(p.photo); });
+                        if (CONFIG.services) CONFIG.services.forEach(s => { if (s.photos && s.photos.length > 0) dynamicPhotos.push(...s.photos); else if (s.photo) dynamicPhotos.push(s.photo); });
+                        
+                        [...new Set(dynamicPhotos)].filter(Boolean).forEach(src => {
+                            const img = new Image();
+                            img.src = src;
+                        });
+                    }, 500);
+
                 } catch (e) {
                     console.error("Критическая ошибка при загрузке данных:", e);
                 }
@@ -1900,6 +1911,20 @@
                     setTimeout(() => loader.remove(), 500);
                 }
             }, 100);
+
+            // 👇 ПРЕДЗАГРУЗКА ВСЕХ СТАТИЧНЫХ ФОТОГРАФИЙ В ФОНЕ (Обо мне, Театр, Обучение) 👇
+            setTimeout(() => {
+                let allStaticPhotos = [];
+                if (APP_DATA.ru.about.photos) allStaticPhotos.push(...APP_DATA.ru.about.photos);
+                if (APP_DATA.ru.theater.photos) allStaticPhotos.push(...APP_DATA.ru.theater.photos);
+                if (APP_DATA.ru.training.photo) allStaticPhotos.push(APP_DATA.ru.training.photo);
+                if (APP_DATA.ru.training.photo_2) allStaticPhotos.push(APP_DATA.ru.training.photo_2);
+
+                [...new Set(allStaticPhotos)].filter(Boolean).forEach(src => {
+                    const img = new Image();
+                    img.src = src;
+                });
+            }, 800);
 
             // Запускаем асинхронную загрузку из Google Таблиц в фоне
             loadDynamicData();
