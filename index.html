@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#1c1c1e">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Навигатор Канала</title>
+    <title>Марина Жохова</title>
     <!-- Подключение VK Bridge API -->
     <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
     <!-- Подключение Tailwind CSS -->
@@ -397,7 +397,7 @@
             en: {
                 profile: {
                     name: "Marina Zhokhova", 
-                    avatar: "https://i.postimg.cc/VLRqMjHB/2026_03_23_21_15_58.jpg", 
+                    avatar: "https://i.postimg.cc/3wxLc7cw/главная.jpg", 
                     bio: "Creating a space where every person is a creator ✨"
                 },
                 about: {
@@ -1244,15 +1244,15 @@
             // Находим главные экраны для эффекта плавного затухания
             const screens = [document.getElementById('main-screen'), document.getElementById('services-screen'), document.getElementById('programs-screen')];
             
-            // Плавно прячем контент
+            // Плавно прячем контент (сделали чуть медленнее для благородного эффекта)
             screens.forEach(s => { 
                 if(s) {
-                    s.style.transition = 'opacity 0.2s ease'; 
+                    s.style.transition = 'opacity 0.3s ease-in-out'; 
                     s.style.opacity = '0'; 
                 }
             });
             
-            // Меняем язык через 200мс (пока контент скрыт)
+            // Меняем язык через 300мс (когда контент полностью скрыт)
             setTimeout(() => {
                 currentLang = currentLang === 'ru' ? 'en' : 'ru';
                 langBtn.textContent = currentLang === 'ru' ? 'EN' : 'RU';
@@ -1263,11 +1263,16 @@
                 // Перерисовываем интерфейс с новыми данными
                 renderApp();
                 
-                // Плавно возвращаем контент
-                screens.forEach(s => { 
-                    if(s) s.style.opacity = '1'; 
+                // 💡 ГЛАВНАЯ ХИТРОСТЬ: Даем браузеру миллисекунды на перерасчет высоты
+                // новых текстов, чтобы возвращение прозрачности было абсолютно плавным без рывков
+                requestAnimationFrame(() => {
+                    setTimeout(() => {
+                        screens.forEach(s => { 
+                            if(s) s.style.opacity = '1'; 
+                        });
+                    }, 50);
                 });
-            }, 200);
+            }, 300);
         }
 
         // --- ЛОГИКА ФОРМЫ ОТЗЫВОВ ---
